@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Медицински СИМУЛАТОР – Кръвопреливане</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#0e1a25;
+    color:#e6f2ff;
+}
+.header{
+    background:#13293d;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    border-bottom:2px solid #1f3f5b;
+}
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+.panel{
+    background:#162b3c;
+    padding:20px;
+    border-radius:8px;
+    margin-bottom:20px;
+    box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+select,button{
+    padding:8px 12px;
+    font-size:15px;
+    margin:5px;
+}
+button{
+    background:#1f6aa5;
+    color:white;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}
+button:hover{ background:#2980b9; }
+.timer{
+    font-size:20px;
+    color:#ff4d4d;
+    font-weight:bold;
+}
+.success{ color:#2ecc71; }
+.error{ color:#e74c3c; }
+.report{
+    background:#101f2d;
+    padding:15px;
+    border-radius:6px;
+    margin-top:15px;
+}
+canvas{
+    background:#0b1722;
+    border-radius:6px;
+    margin-top:15px;
+}
+
+/* ===== LOGO ===== */
+.logo-link {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.logo-link img {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGO LINK -->
+<a href="index.html" class="logo-link">
+    <img src="logo2.png" alt="Капка живот">
+</a>
+
+<div class="header">
+Медицински СИМУЛАТОР – Кръвопреливане
+</div>
+
+<div class="container">
+
+<div class="panel">
+    <strong>Ниво на трудност:</strong>
+    <select id="difficulty">
+        <option value="easy">Лесно</option>
+        <option value="medium">Средно</option>
+        <option value="hard">Трудно</option>
+    </select>
+    <button onclick="startSimulation()">Старт</button>
+</div>
+
+<div class="panel">
+    <div id="caseTitle"></div>
+    <div id="caseDescription"></div>
+    <div class="timer">⏱ Време: <span id="time">0</span> сек</div>
+
+    <br>
+
+    <label>Избери кръвна група:</label>
+    <select id="bloodChoice">
+        <option>O−</option>
+        <option>O+</option>
+        <option>A−</option>
+        <option>A+</option>
+        <option>B−</option>
+        <option>B+</option>
+        <option>AB−</option>
+        <option>AB+</option>
+    </select>
+
+    <button onclick="submitAnswer()">Потвърди</button>
+
+    <div id="result"></div>
+</div>
+
+<div class="panel">
+    <strong>Аналитичен отчет:</strong>
+    <div class="report" id="report"></div>
+    <canvas id="statsChart" width="600" height="300"></canvas>
+</div>
+
+</div>
+
+<script>
+
+let timer;
+let timeLeft;
+let currentCase;
+let score = 0;
+let total = 0;
+let correctCount = 0;
+let wrongCount = 0;
+
+const compatibility={
+"O−":["O−","O+","A−","A+","B−","B+","AB−","AB+"],
+"O+":["O+","A+","B+","AB+"],
+"A−":["A−","A+","AB−","AB+"],
+"A+":["A+","AB+"],
+"B−":["B−","B+","AB−","AB+"],
+"B+":["B+","AB+"],
+"AB−":["AB−","AB+"],
+"AB+":["AB+"]
+};
+
+const scenarios=[
+{title:"ПТП",desc:"Мъж 32г. с тежка кръвозагуба. Кръвна група: A+",blood:"A+"},
+{title:"Операция",desc:"Жена 45г. планова операция. Кръвна група: O−",blood:"O−"},
+{title:"Травма",desc:"Мъж 19г. вътрешен кръвоизлив. Кръвна група: B+",blood:"B+"},
+{title:"Раждане",desc:"Жена 28г. следродилен кръвоизлив. Кръвна група: AB+",blood:"AB+"},
+{title:"Онкология",desc:"Пациент 60г. анемия. Кръвна група: A−",blood:"A−"},
+{title:"Инцидент",desc:"Дете 10г. спешна нужда. Кръвна група: O+",blood:"O+"},
+{title:"Сърдечна операция",desc:"Мъж 70г. Кръвна група: AB−",blood:"AB−"},
+{title:"Катастрофа",desc:"Жена 35г. Кръвна група: B−",blood:"B−"},
+{title:"Изгаряне",desc:"Мъж 50г. Кръвна група: A+",blood:"A+"},
+{title:"Спешен случай",desc:"Жена 40г. Кръвна група: O+",blood:"O+"}
+];
+
+function startSimulation(){
+
+    document.getElementById("result").innerHTML="";
+    currentCase=scenarios[Math.floor(Math.random()*scenarios.length)];
+
+    document.getElementById("caseTitle").innerHTML="<h3>"+currentCase.title+"</h3>";
+    document.getElementById("caseDescription").innerHTML=currentCase.desc;
+
+    let difficulty=document.getElementById("difficulty").value;
+    if(difficulty==="easy") timeLeft=40;
+    if(difficulty==="medium") timeLeft=25;
+    if(difficulty==="hard") timeLeft=15;
+
+    document.getElementById("time").textContent=timeLeft;
+
+    clearInterval(timer);
+
+    timer=setInterval(()=>{
+        timeLeft--;
+        document.getElementById("time").textContent=timeLeft;
+
+        if(timeLeft<=0){
+            clearInterval(timer);
+
+            document.getElementById("result").innerHTML=
+            "<span class='error'>⛔ Времето изтече! Случаят е загубен.</span>";
+
+            score=0;
+            total=0;
+            correctCount=0;
+            wrongCount=0;
+
+            generateReport();
+            drawChart();
+        }
+
+    },1000);
+}
+
+function submitAnswer(){
+
+    clearInterval(timer);
+
+    let chosen=document.getElementById("bloodChoice").value;
+    let patientBlood=currentCase.blood;
+
+    total++;
+
+    if(compatibility[chosen].includes(patientBlood)){
+        score++;
+        correctCount++;
+        document.getElementById("result").innerHTML="<span class='success'>✔ Правилно решение</span>";
+    }else{
+        wrongCount++;
+        document.getElementById("result").innerHTML="<span class='error'>✘ Неправилно решение</span>";
+    }
+
+    generateReport();
+    drawChart();
+}
+
+function generateReport(){
+    let accuracy = total===0 ? 0 : Math.round((score/total)*100);
+
+    document.getElementById("report").innerHTML=
+    "Общо случаи: "+total+"<br>"+
+    "Правилни решения: "+score+"<br>"+
+    "Успеваемост: "+accuracy+"%<br>"+
+    "Ниво на компетентност: "+evaluateLevel(accuracy);
+}
+
+function evaluateLevel(acc){
+    if(acc>85) return "Експерт";
+    if(acc>65) return "Напреднал";
+    if(acc>40) return "Средно ниво";
+    return "Начинаещ";
+}
+
+function drawChart(){
+
+    const canvas=document.getElementById("statsChart");
+    const ctx=canvas.getContext("2d");
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const totalCases=correctCount+wrongCount;
+    if(totalCases===0) return;
+
+    const correctHeight=(correctCount/totalCases)*200;
+    const wrongHeight=(wrongCount/totalCases)*200;
+
+    ctx.strokeStyle="#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(100,250);
+    ctx.lineTo(500,250);
+    ctx.stroke();
+
+    ctx.fillStyle="#2ecc71";
+    ctx.fillRect(180,250-correctHeight,100,correctHeight);
+
+    ctx.fillStyle="#e74c3c";
+    ctx.fillRect(350,250-wrongHeight,100,wrongHeight);
+
+    ctx.fillStyle="#ffffff";
+    ctx.font="16px Arial";
+    ctx.fillText("Правилни: "+correctCount,170,270);
+    ctx.fillText("Грешни: "+wrongCount,340,270);
+}
+
+generateReport();
+
+</script>
+
+</body>
+</html>

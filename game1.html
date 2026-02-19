@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Какво знам за кръводаряването?</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #c9e6f5;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+
+#timer, #score, #best {
+    font-size: 18px;
+    margin: 8px;
+    font-weight: bold;
+}
+
+.answers {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px;
+}
+
+.answer {
+    padding: 10px 20px;
+    color: white;
+    border-radius: 6px;
+    cursor: grab;
+}
+
+#wrong { background: #3498db; }
+#human { background: #e74c3c; }
+#correct { background: #f39c12; }
+
+.questions {
+    width: 65%;
+    margin: auto;
+}
+
+.question {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    text-align: left;
+}
+
+.dropzone {
+    margin-top: 10px;
+    height: 35px;
+    border: 2px dashed #999;
+    border-radius: 5px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+
+/* ===== LOGO ===== */
+.logo-link {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.logo-link img {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<!-- LOGO LINK -->
+<a href="index.html" class="logo-link">
+    <img src="logo2.png" alt="Капка живот">
+</a>
+
+<h2>Какво знам за кръводаряването?</h2>
+
+<div id="timer">⏱️ Време: <span id="time">60</span> сек</div>
+<div id="score">⭐ Точки: 0</div>
+<div id="best">🏆 Най-добър резултат: 0</div>
+
+<!-- Отговори -->
+<div class="answers" id="answers">
+    <div class="answer" draggable="true" id="wrong">Грешно</div>
+    <div class="answer" draggable="true" id="human">Хуманен</div>
+    <div class="answer" draggable="true" id="correct">Вярно</div>
+</div>
+
+<!-- Въпроси -->
+<div class="questions" id="questions">
+    <div class="question" data-answer="wrong">
+        Кръводарява се само за роднини
+        <div class="dropzone"></div>
+    </div>
+
+    <div class="question" data-answer="correct">
+        Кръводаряването може да спаси човешки живот
+        <div class="dropzone"></div>
+    </div>
+
+    <div class="question" data-answer="human">
+        Кръводаряването е доброволен и .... акт
+        <div class="dropzone"></div>
+    </div>
+</div>
+
+<button onclick="checkAnswers()">Провери</button>
+<button onclick="restartGame()">Рестарт</button>
+
+<script>
+let dragged = null;
+let timer = null;
+let time = 60;
+
+/* ===== ЗВУК ===== */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = (type === "correct") ? 800 : 200;
+    gain.gain.value = 0.2;
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.2);
+}
+
+/* Drag */
+function initDrag() {
+    document.querySelectorAll(".answer").forEach(item => {
+        item.addEventListener("dragstart", () => dragged = item);
+    });
+}
+
+/* Drop */
+function initDropzones() {
+    document.querySelectorAll(".dropzone").forEach(zone => {
+        zone.addEventListener("dragover", e => e.preventDefault());
+        zone.addEventListener("drop", () => {
+            zone.innerHTML = "";
+            zone.appendChild(dragged.cloneNode(true));
+        });
+    });
+}
+
+/* Проверка + точки */
+function checkAnswers() {
+    let points = 0;
+
+    document.querySelectorAll(".question").forEach(q => {
+        let right = q.dataset.answer;
+        let dropped = q.querySelector(".dropzone div");
+
+        if (dropped && dropped.id === right) {
+            q.style.border = "2px solid green";
+            playSound("correct");
+            points++;
+        } else {
+            q.style.border = "2px solid red";
+            playSound("wrong");
+        }
+    });
+
+    document.getElementById("score").textContent = "⭐ Точки: " + points;
+    saveBestScore(points);
+
+    setTimeout(() => {
+        alert("Резултат: " + points + " точки");
+    }, 300);
+}
+
+/* ===== localStorage ===== */
+function saveBestScore(score) {
+    let best = localStorage.getItem("bestScore") || 0;
+    if (score > best) {
+        localStorage.setItem("bestScore", score);
+        best = score;
+    }
+    document.getElementById("best").textContent = "🏆 Най-добър резултат: " + best;
+}
+
+/* ===== Разбъркване ===== */
+function shuffle(containerId) {
+    const container = document.getElementById(containerId);
+    const items = Array.from(container.children);
+
+    for (let i = items.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+    }
+
+    items.forEach(item => container.appendChild(item));
+}
+
+/* Таймер */
+function startTimer() {
+    clearInterval(timer);
+    time = 60;
+    document.getElementById("time").textContent = time;
+
+    timer = setInterval(() => {
+        time--;
+        document.getElementById("time").textContent = time;
+        if (time <= 0) {
+            clearInterval(timer);
+            alert("Времето изтече!");
+        }
+    }, 1000);
+}
+
+/* Рестарт */
+function restartGame() {
+    document.querySelectorAll(".dropzone").forEach(z => z.innerHTML = "");
+    document.querySelectorAll(".question").forEach(q => q.style.border = "none");
+    document.getElementById("score").textContent = "⭐ Точки: 0";
+
+    shuffle("questions"); // 🔀 въпроси
+    shuffle("answers");   // 🔀 отговори
+
+    initDrag();
+    initDropzones();
+    startTimer();
+}
+
+/* Старт */
+saveBestScore(0);
+shuffle("questions");
+shuffle("answers");
+initDrag();
+initDropzones();
+startTimer();
+</script>
+
+</body>
+</html>

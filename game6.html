@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Какво знам за процедурата по кръводаряване?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #c9e6f5;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 { margin-bottom: 10px; }
+
+.info {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* === КАРТИ 1–5 === */
+.quiz-card {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    font-size: 48px;
+    font-weight: bold;
+    border-radius: 18px;
+    background: #0b4f7c;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.quiz-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 4px;
+    border-radius: 18px;
+    background: linear-gradient(
+        90deg,
+        #ff5252,
+        #ffeb3b,
+        #00e5ff,
+        #ff5252
+    );
+    background-size: 300% 300%;
+    animation: cardBorder 5s linear infinite;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+@keyframes cardBorder {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+.quiz-card:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 35px rgba(255, 80, 80, 0.9);
+}
+
+.quiz-card.active::before {
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    animation: none;
+}
+
+/* === ВЪПРОС === */
+#gameBox {
+    margin-top: 30px;
+    display: none;
+}
+
+.question {
+    background: #aefcf4;
+    padding: 20px;
+    font-size: 22px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* === ОТГОВОРИ === */
+.answers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.answer {
+    position: relative;
+    overflow: hidden;
+    background: #0a4f7a;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.answer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: 10px;
+    background: linear-gradient(
+        90deg,
+        #00e5ff,
+        #00ff9c,
+        #ffeb3b,
+        #ff4081,
+        #00e5ff
+    );
+    background-size: 300% 300%;
+    animation: borderMove 4s linear infinite;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+@keyframes borderMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+.answer:hover {
+    transform: scale(1.07);
+}
+
+.correct { background: #2ecc71 !important; }
+.wrong { background: #e74c3c !important; }
+
+/* === ФИНАЛЕН ЕКРАН === */
+#endScreen {
+    display: none;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 30px;
+    font-size: 22px;
+}
+
+/* Бутон */
+button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+/* ===== LOGO ===== */
+.logo-link {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.logo-link img {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<!-- LOGO LINK -->
+<a href="index.html" class="logo-link">
+    <img src="logo2.png" alt="Капка живот">
+</a>
+<h1>Какво знам за процедурата по кръводаряване?</h1>
+
+<p class="info">
+Провери своите знания за кръводаряването, като отговориш на въпросите. Има само един правилен отговор.
+
+Ако имаш пропуски, можеш да разгледаш нашия сайт и да допълниш своите знания. Учи и се забавлявай с нас!
+
+
+</p>
+
+<div class="info">
+⏱ Време: <span id="time">0</span> сек |
+⭐ Точки: <span id="score">0</span>
+</div>
+
+<div class="cards">
+    <div class="quiz-card" onclick="openQuestion(0)">1</div>
+    <div class="quiz-card" onclick="openQuestion(1)">2</div>
+    <div class="quiz-card" onclick="openQuestion(2)">3</div>
+    <div class="quiz-card" onclick="openQuestion(3)">4</div>
+</div>
+
+<div id="gameBox">
+    <div class="question" id="questionText"></div>
+    <div class="answers" id="answersBox"></div>
+</div>
+
+<div id="endScreen">
+    <h2>🎉 Край на играта!</h2>
+    <p>Резултат: <b><span id="finalScore"></span></b></p>
+    <p>Време: <b><span id="finalTime"></span> сек</b></p>
+</div>
+
+<button onclick="restartGame()">🔄 Рестарт</button>
+
+<audio id="soundCorrect" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="soundWrong" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+
+<script>
+let questions = [
+    {
+        text: "За колко време се възстановява количеството дарена кръв?",
+        answers: ["1 седмица", "24 часа", "10 дена", "1 месец"],
+        correct: 1
+    },
+    {
+        text: "Кой се нуждае от кръвоприливане?",
+        answers: ["Пациенти с тежки изгаряния", "Родилка с усложнения", "Хоръ претърпели ПТП", "Всички изброени"],
+        correct: 3
+    },
+    {
+        text: "Колко време продължава процедурата по кръводаряване?",
+        answers: ["около 1 час", "около 2 часа", "около 40 минути", "около 10 минути"],
+        correct: 2
+    },
+     {
+        text: "Какво трябво да направи човек след кръводаряване?",
+        answers: ["Да приема много течности", "Да работи усилено", "Да отиде да тренира", "Да приема нискокалорична храна"],
+        correct: 0
+    }
+];
+
+let score = 0;
+let time = 0;
+let timer;
+let answeredQuestions = [];
+
+function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => {
+        time++;
+        document.getElementById("time").textContent = time;
+    }, 1000);
+}
+
+function openQuestion(index) {
+    if (answeredQuestions.includes(index)) return;
+
+    startTimer();
+    document.getElementById("gameBox").style.display = "block";
+
+    document.querySelectorAll('.quiz-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.quiz-card')[index].classList.add('active');
+
+    const q = questions[index];
+    document.getElementById("questionText").textContent = q.text;
+
+    const answersBox = document.getElementById("answersBox");
+    answersBox.innerHTML = "";
+
+    q.answers.forEach((ans, i) => {
+        const div = document.createElement("div");
+        div.className = "answer";
+        div.textContent = ans;
+        div.onclick = () => checkAnswer(div, i === q.correct, index);
+        answersBox.appendChild(div);
+    });
+}
+
+function checkAnswer(el, correct, index) {
+    if (answeredQuestions.includes(index)) return;
+
+    answeredQuestions.push(index);
+    document.querySelectorAll('.answer').forEach(a => a.style.pointerEvents = "none");
+
+    if (correct) {
+        el.classList.add("correct");
+        document.getElementById("soundCorrect").play();
+        score++;
+    } else {
+        el.classList.add("wrong");
+        document.getElementById("soundWrong").play();
+    }
+
+    document.getElementById("score").textContent = score;
+    setTimeout(checkEndGame, 800);
+}
+
+function checkEndGame() {
+    if (answeredQuestions.length === questions.length) {
+        clearInterval(timer);
+        document.getElementById("gameBox").style.display = "none";
+        document.getElementById("endScreen").style.display = "block";
+        document.getElementById("finalScore").textContent =
+            score + " / " + questions.length;
+        document.getElementById("finalTime").textContent = time;
+    }
+}
+
+function restartGame() {
+    score = 0;
+    time = 0;
+    answeredQuestions = [];
+    clearInterval(timer);
+
+    document.getElementById("score").textContent = 0;
+    document.getElementById("time").textContent = 0;
+    document.getElementById("gameBox").style.display = "none";
+    document.getElementById("endScreen").style.display = "none";
+
+    document.querySelectorAll('.quiz-card').forEach(c => c.classList.remove('active'));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="bg">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Капка живот</title>
+    <link
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet">
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    background-image: radial-gradient(#e5e9ef 1px, transparent 1px);
+    background-size: 20px 20px;
+    padding-top: 75px;
+}
+
+/* ===== NAVBAR ===== */
+header {
+    background-color: #c83a3a;
+    color: white;
+    position: fixed;      /* ⬅️ ВАЖНО */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;        /* ⬅️ над всичко */
+}
+
+.navbar {
+    max-width: 1300px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    position: relative;
+}
+
+/* Лого */
+.logo {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.logo img {
+    filter:
+        drop-shadow(1px 0 0 white)
+        drop-shadow(-1px 0 0 white)
+        drop-shadow(0 1px 0 white)
+        drop-shadow(0 -1px 0 white);
+}
+
+.logo-icon {
+    font-size: 26px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Меню */
+nav {
+    flex: 1;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+nav ul li {
+    position: relative;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Dropdown */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: #c83a3a;
+    min-width: 220px;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 12px 15px;
+}
+
+.dropdown-content a:hover {
+    background-color: #b23232;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Търсене */
+.search {
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.search-box {
+    display: none;
+    position: absolute;
+    top: 65px;
+    right: 20px;
+}
+
+.search-box input {
+    padding: 8px 12px;
+    width: 220px;
+    border-radius: 4px;
+    border: none;
+}
+
+/* Hamburger */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+/* ===== HERO ===== */
+.hero {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.hero h1 {
+    color: #000;
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.6;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    nav ul {
+        display: none;
+        flex-direction: column;
+        background-color: #c83a3a;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    nav ul.show {
+        display: flex;
+    }
+
+    .dropdown-content {
+        position: static;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}
+
+/* ===== CONTENT SECTION ===== */
+.content-section {
+    max-width: 1200px;
+    margin: 60px auto;
+    background: #ffffff;
+    padding: 40px;
+}
+
+.myth-block {
+    display: flex;
+    gap: 100px;   /* ↑ повече разстояние между снимката и текста */
+    align-items: flex-start;
+}
+
+
+.myth-image img {
+    width: 420px;
+    max-width: 100%;
+    border-radius: 4px;
+}
+
+.myth-text {
+    flex: 1;
+    padding-top: 20px;
+    padding-right: 10px;
+}
+
+
+.myth-text h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.myth-text p {
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.myth-text p strong {
+    text-decoration: underline;
+    font-weight: normal;
+}
+
+.content-divider {
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+    .myth-block {
+        flex-direction: column;
+    }
+
+    .myth-image img {
+        width: 100%;
+    }
+}
+
+
+.myth-text h2 {
+    font-size: 28px;
+    margin-bottom: 18px;
+    font-weight: 600;
+    color: #202124;
+}
+
+.myth-text p {
+    font-size: 20px;
+    line-height: 1.8;
+    text-align: justify;
+    color: #333;
+}
+.content-section {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    background: #ffffff;
+    padding: 25px;
+}
+
+/* Mobile toggle */
+@media (max-width: 900px) {
+  .menu ul {
+    flex-direction: column;
+  }
+
+  .submenu {
+    position: static;
+  }
+
+  .submenu.open {
+    display: block;
+  }
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    color: white;
+    font-size: 15px;
+    display: inline-block;
+    padding: 10px 0;
+}
+.search-results {
+    display: none;
+    position: absolute;
+    top: 105px;
+    right: 20px;
+    width: 250px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.search-results a {
+    display: block;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.search-results a:hover {
+    background-color: #f2f2f2;
+}
+
+</style>
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <!-- Лого -->
+        <div class="logo">
+        <a href="index.html" class="logo-link">  <div class="logo-icon"><img src="logo2.png" width="20"
+              height="35"></div></a>
+          <div class="logo-text" align="center">Капка живот</div>
+        </div>
+        <!-- Меню -->
+    <nav>
+        <ul id="menu">
+            <li><a href="questions_and_answers.html">Въпроси и отговори</a></li>
+            <li><a href="myths_and_reality.html">Митове и реалност</a></li>
+            <li><a href="statistics.html">Статистика</a></li>
+
+            <li class="dropdown">
+                <span class="dropdown-toggle">Инициативи ▾</span>
+                <div class="dropdown-content">
+                    <a href="application.html">Анкетно проучване</a>
+                    <a href="Peers_educating_peers.html">Връстници обучават връстници</a>
+                    <a href="Blood_donation_campaign.html">Кръводарителска кампания</a>
+                    <a href="Garden_of_Blood_Donation.html">Градина на кръводаряването</a>
+                    <a href="Promotion_of_the_project.html">Популяризиране на проекта</a>
+                </div>
+            </li>
+
+	<li class="dropdown">
+                <span class="dropdown-toggle">Лични истории ▾</span>
+                <div class="dropdown-content">
+                    <a href="patient.html">Пациент</a>
+                    <a href="relative_of_the_patient.html">Роднина на пациент</a>
+                    <a href="first_time_blood_donor.html">Кръводарители за първи път</a>
+                    <a href="regular_blood_donor.html">Редовен кръводарител</a>
+                    <a href="medical_specialist.html">Медицински специалисти</a>
+                </div>
+            </li>
+
+
+            <li class="dropdown">
+                <span class="dropdown-toggle">Образователни ресурси ▾</span>
+                <div class="dropdown-content">
+                    <a href="history_of_blood_donation.html">История на кръводаряването</a>
+                    <a href="worksheets.html">Работни листове</a>
+ 		    <a href="fairy_tale_a_drop_of_life.html">Приказка "Капка живот"</a>
+		    <a href="educational_games.html">Образователни игри</a>
+		    <a href="blood_center_questionnaire.html">Въпросник в кръвен център</a>
+		    <a href="simulator.html">Провери своите знания - кръводаряване</a>
+		</div>
+            </li>
+
+	<li><a href="for_us.html">За нас</a></li>
+                
+        </ul>
+    </nav>
+
+        <!-- Икони -->
+        <div class="search" aria-label="Търсене"> 
+<i class="fa-solid fa-magnifying-glass"></i>
+	</div>
+        <div class="hamburger"> </div>
+        <!-- Search box -->
+        <div class="search-box"> 
+<input id="searchInput" placeholder="Търсене..." type="text"> 
+</div>
+<div id="searchResults" class="search-results"></div> 
+      </div>
+    </header>
+    <div align="center">
+      <section class="hero"><br>
+        <h1> Митове и реалност</h1>
+      </section>
+    </div>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed9.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2> Мит 1: „Кръводаряването е болезнено.“</h2>
+          <p> Реалност: Усещането е сравнено с леко убождане, което трае
+            само няколко секунди. Повечето дарители казват, че е
+            по-малко болезнено, отколкото са очаквали. Освен това,
+            процесът на даряване е бърз и безопасен. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed 10.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="377"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 2: "Може да ми стане лошо или да припадна
+            след даряване."</h2>
+          <p>Реалност: Замайването е рядко и може да се случи, ако
+            не сте пили достатъчно течности или не
+            сте яли преди даряването. Медицинският персонал е подготвен
+            да реагира веднага, ако се почувствате
+            неразположени, и ще ви осигури комфорт.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed 11.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 3: "Ще загубя твърде много кръв и това може да е
+            опасно."</h2>
+          <p>Реалност: Количеството кръв, което се дарява (около 450
+            мл), представлява около 10% от общия кръвен обем на тялото.
+            Тялото бързо възстановява изгубената течност в рамките на 24
+            часа. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed12.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 4: "Даряването на кръв може да причини инфекция."</h2>
+          <p>Реалност: Всички използвани материали за вземане на кръв са
+            стерилни и за еднократна употреба. Няма никакъв риск от
+            заразяване на дарителя. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed13.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 5: "Ще ми отнеме дни да се възстановя след даряване на
+            кръв."</h2>
+          <p>Реалност: Течната част на кръвта (плазмата) се възстановява
+            в рамките на 24 часа. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed14.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 6: "Не мога да даря кръв, ако имам татуировки или
+            пиърсинг."</h2>
+          <p>Реалност: Ако сте направили татуировка или пиърсинг, трябва
+            да изчакате 4-6 месеца, за да сте сигурни, че няма инфекция.
+            След този период можете спокойно да дарите кръв. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed15.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 7: "Даряването на кръв е времеемко и неудобно."</h2>
+          <p>Реалност: Целият процес отнема около 40 минути. Това е
+            малка инвестиция на време с голямо значение. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed16.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 8: "Ако съм дарил веднъж, трябва да чакам поне 1
+            година до следващото даряване."</h2>
+          <p>Реалност: Мъжете могат да даряват кръв 5 пъти в рамките на
+            една календарна година, а жените – 4 пъти. Интервалът между
+            две кръводарявания трябва да бъде минимум 2 месеца. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed17.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 9: "Малките количества кръв не могат да спасят живот."</h2>
+          <p>Реалност: Само една единица дарена кръв може да спаси до
+            три живота. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed18.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 10: "Мога да загубя имунитета си, ако даря кръв."</h2>
+          <p>Реалност: Кръводаряването не оказва влияние върху имунната
+            система. Кръвта се възстановява бързо и не засяга
+            способността ви да се борите с инфекция. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed19.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 11: "Възрастните хора не могат да даряват кръв."</h2>
+          <p>Реалност: Здравите хора между 18 и 65 години могат да
+            станат кръводарители. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed20.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 12: "Ако дарявам кръв, може да развия анемия."</h2>
+          <p>&nbsp;Реалност: Кръводаряването не причинява анемия, ако
+            сте здрав човек с нормални нива на хемоглобин. Преди всяко
+            даряване се прави проверка на тези стойности. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed21.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 13: "Кръводаряването е само за бедствени случаи."</h2>
+          <p>Реалност: Дарената кръв се използва ежедневно в болници за
+            операции, лечение на пациенти с анемия, рак, хронични
+            заболявания и други. Редовните дарения гарантират наличието
+            на кръв за всякакви ситуации. </p>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <div class="myth-block">
+        <div class="myth-image"> <img src="unnamed22.jpg"
+            alt="Кръводаряване" moz-do-not-send="true" width="420"
+            height="389"> </div>
+        <div class="myth-text">
+          <h2>Мит 14: "Само хората с определена кръвна група могат да
+            даряват."</h2>
+          <p>Реалност: Всички кръвни групи са ценни и необходими.
+            Например, кръвна група O- е универсална и може да се
+            използва за всеки, но хората с редки кръвни групи като AB+
+            са също толкова важни. </p>
+        </div>
+      </div>
+    </section>
+    
+<script>
+document.querySelectorAll('.has-submenu > button').forEach(button => {
+  button.addEventListener('click', e => {
+    if (window.innerWidth <= 900) {
+      e.preventDefault();
+
+      const submenu = button.nextElementSibling;
+      submenu.classList.toggle('open');
+    }
+  });
+});
+</script>
+<script src="search-data.js"></script>
+
+ <script>
+/* ===== SEARCH SYSTEM (FIXED FINAL) ===== */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+// Hamburger menu
+const hamburger = document.querySelector('.hamburger');
+const menu = document.getElementById('menu');
+
+hamburger.addEventListener('click', () => {
+    menu.classList.toggle('show');
+});
+
+    const searchIcon = document.querySelector('.search');
+    const searchBox = document.querySelector('.search-box');
+    const searchInput = document.getElementById("searchInput");
+    const resultsBox = document.getElementById("searchResults");
+
+    // Показване / скриване
+    searchIcon.addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        const isVisible = searchBox.style.display === 'block';
+        searchBox.style.display = isVisible ? 'none' : 'block';
+        resultsBox.style.display = 'none';
+
+        if (!isVisible) {
+            searchInput.value = '';
+            searchInput.focus();
+        }
+    });
+
+    // Live търсене
+    searchInput.addEventListener("input", function () {
+
+        const query = this.value.toLowerCase().trim();
+        resultsBox.innerHTML = "";
+
+        if (query.length < 2) {
+            resultsBox.style.display = "none";
+            return;
+        }
+
+        if (typeof siteData === "undefined") {
+            console.error("siteData не е зареден.");
+            return;
+        }
+
+        const results = siteData.filter(page =>
+            page.title.toLowerCase().includes(query) ||
+            page.content.toLowerCase().includes(query)
+        );
+
+        if (results.length === 0) {
+            resultsBox.innerHTML =
+                "<p style='padding:10px;'>Няма резултати</p>";
+        } else {
+            results.forEach(page => {
+                const link = document.createElement("a");
+                link.href = page.url;
+                link.textContent = page.title;
+                resultsBox.appendChild(link);
+            });
+        }
+
+        resultsBox.style.display = "block";
+    });
+
+    // Клик извън search → затваряне
+    document.addEventListener("click", function (e) {
+        if (!searchBox.contains(e.target) &&
+            !searchIcon.contains(e.target) &&
+            !resultsBox.contains(e.target)) {
+
+            searchBox.style.display = "none";
+            resultsBox.style.display = "none";
+        }
+    });
+
+});
+</script>
+  </body>
+</html>

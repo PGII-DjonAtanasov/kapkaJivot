@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Кръвни групи – Quiz</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle, #1e90ff, #0a3d62);
+    color: white;
+    text-align: center;
+}
+
+
+
+/* ===== LOGO ===== */
+.logo-link {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.logo-link img {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.logo img {
+    filter:
+        drop-shadow(1px 0 0 white)
+        drop-shadow(-1px 0 0 white)
+        drop-shadow(0 1px 0 white)
+        drop-shadow(0 -1px 0 white);
+}
+
+.logo-icon {
+    font-size: 26px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ===== TOP BAR ===== */
+#top {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background: #8e004d;
+}
+
+#timer, #score {
+    font-size: 22px;
+}
+
+/* ===== PROGRESS ===== */
+#progress {
+    width: 100%;
+    height: 10px;
+    background: rgba(255,255,255,0.3);
+}
+
+#bar {
+    height: 100%;
+    width: 100%;
+    background: #fff;
+}
+
+/* ===== GAME ===== */
+#game {
+    padding: 40px 20px;
+}
+
+#question {
+    font-size: 26px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px #000;
+}
+
+/* ===== ANSWERS ON ONE ROW ===== */
+.answers {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: auto;
+}
+
+.answer {
+    border: 3px solid yellow;
+    padding: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(0,0,0,0.2);
+    min-width: 120px;
+}
+
+.answer:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.correct {
+    background: green !important;
+}
+
+.wrong {
+    background: red !important;
+}
+
+#footer {
+    margin-top: 30px;
+    font-size: 20px;
+}
+
+/* Лого */
+.logo {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.logo img {
+    filter:
+        drop-shadow(1px 0 0 white)
+        drop-shadow(-1px 0 0 white)
+        drop-shadow(0 1px 0 white)
+        drop-shadow(0 -1px 0 white);
+}
+
+.logo-icon {
+    font-size: 26px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+</style>
+</head>
+
+<body>
+
+
+<div id="top">
+<!-- Лого -->
+	<div class="logo">
+        <div class="logo-icon"><a href="index.html" class="logo-link">
+	<img src="logo2.png" height="35" width="20"></div>
+	</a>
+	</div>
+
+    <div id="timer">⏱️ <span id="time">20</span></div>
+    <div id="score">✔️ <span id="points">0</span></div>
+</div>
+
+<div id="progress">
+    <div id="bar"></div>
+</div>
+
+<div id="game">
+    <div id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div id="footer">
+        <span id="current">1</span> / <span id="total">10</span>
+    </div>
+</div>
+
+
+
+<script>
+const quiz = [
+  {
+    q: "Хората с кръвна група 0− могат да дарят на:",
+    a: ["A+", "B+", "AB+", "Всички"],
+    correct: 3
+  },
+  {
+    q: "Хората с кръвна група 0+ могат да дарят на:",
+    a: ["0+ и A+", "B+ и AB+", "0+, A+, B+, AB+", "Само на 0+"],
+    correct: 2
+  },
+  {
+    q: "Хората с кръвна група A− могат да дарят на:",
+    a: ["A+ и AB+", "A− и AB−", "0−", "A−, A+, AB− и AB+"],
+    correct: 3
+  },
+  {
+    q: "Хората с кръвна група A+ могат да дарят на:",
+    a: ["A+ и AB+", "0−", "B+", "Всички"],
+    correct: 0
+  },
+  {
+    q: "Хората с кръвна група B− могат да дарят на:",
+    a: ["B− и AB−", "B+, AB+", "0+", "B−, B+, AB− и AB+"],
+    correct: 3
+  },
+  {
+    q: "Хората с кръвна група B+ могат да дарят на:",
+    a: ["B+ и AB+", "A+", "0+", "Всички"],
+    correct: 0
+  },
+  {
+    q: "Хората с кръвна група AB− могат да дарят на:",
+    a: ["AB−", "AB+ и AB−", "0−", "Всички"],
+    correct: 1
+  },
+  {
+    q: "Хората с кръвна група AB+ могат да дарят на:",
+    a: ["Всички", "0−", "A+", "Само на AB+"],
+    correct: 3
+  },
+  {
+    q: "Коя кръвна група е универсален дарител?",
+    a: ["A−", "B−", "0−", "AB+"],
+    correct: 2
+  },
+  {
+    q: "Коя кръвна група може да приема кръв от всички?",
+    a: ["0−", "A+", "B+", "AB+"],
+    correct: 3
+  }
+];
+
+let index = 0;
+let points = 0;
+let time = 20;
+let timer;
+
+/* SOUND */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function sound(ok) {
+    const osc = audioCtx.createOscillator();
+    osc.frequency.value = ok ? 800 : 200;
+    osc.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.2);
+}
+
+function loadQuestion() {
+    if (index >= quiz.length) {
+        endGame();
+        return;
+    }
+
+    document.getElementById("question").textContent = quiz[index].q;
+    document.getElementById("answers").innerHTML = "";
+    document.getElementById("current").textContent = index + 1;
+    document.getElementById("total").textContent = quiz.length;
+
+    quiz[index].a.forEach((text, i) => {
+        let div = document.createElement("div");
+        div.className = "answer";
+        div.textContent = text;
+        div.onclick = () => checkAnswer(i, div);
+        document.getElementById("answers").appendChild(div);
+    });
+
+    resetTimer();
+}
+
+function checkAnswer(i, el) {
+    clearInterval(timer);
+    const answers = document.querySelectorAll(".answer");
+
+    if (i === quiz[index].correct) {
+        el.classList.add("correct");
+        points++;
+        document.getElementById("points").textContent = points;
+        sound(true);
+    } else {
+        el.classList.add("wrong");
+        answers[quiz[index].correct].classList.add("correct");
+        sound(false);
+    }
+
+    setTimeout(() => {
+        index++;
+        loadQuestion();
+    }, 1000);
+}
+
+function resetTimer() {
+    time = 20;
+    document.getElementById("time").textContent = time;
+    document.getElementById("bar").style.width = "100%";
+
+    timer = setInterval(() => {
+        time--;
+        document.getElementById("time").textContent = time;
+        document.getElementById("bar").style.width = (time / 20 * 100) + "%";
+
+        if (time === 0) {
+            clearInterval(timer);
+            index++;
+            loadQuestion();
+        }
+    }, 1000);
+}
+
+function endGame() {
+    document.getElementById("game").innerHTML = `
+        <h2>Край на играта</h2>
+        <p>Точки: ${points} / ${quiz.length}</p>
+        <button onclick="location.reload()">Играй отново</button>
+    `;
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>

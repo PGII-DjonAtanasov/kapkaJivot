@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Какви са ползите за кръводарителя?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #c9e6f5;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 { margin-bottom: 10px; }
+
+.info {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#status {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.question-box {
+    background: #aefcf4;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.answer {
+    background: #0a4f7a;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.3s;
+}
+
+.answer:hover {
+    transform: scale(1.07);
+}
+
+.correct { background: #2ecc71 !important; }
+.wrong { background: #e74c3c !important; }
+
+.helpers {
+    margin-top: 20px;
+}
+
+.helper-btn {
+    padding: 10px 18px;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #ff9800;
+    color: black;
+}
+
+.helper-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#endScreen {
+    display: none;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 30px;
+    font-size: 22px;
+}
+
+button.restart {
+    margin-top: 20px;
+    padding: 12px 22px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+/* ===== LOGO ===== */
+.logo-link {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.logo-link img {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<!-- LOGO LINK -->
+<a href="index.html" class="logo-link">
+    <img src="logo2.png" alt="Капка живот">
+</a>
+<h1>Какви са ползите за кръводарителя?</h1>
+
+<p class="info">
+Провери своите знания за кръводаряването, като отговориш на въпросите. Има само един правилен отговор.
+
+Ако имаш пропуски, можеш да разгледаш нашия сайт и да допълниш своите знания. Учи и се забавлявай с нас!
+</p>
+
+<div id="status">
+⏱ Време: <span id="time">0</span> сек |
+⭐ Точки: <span id="score">0</span>
+</div>
+
+<div class="question-box" id="questionText"></div>
+
+<div class="answers" id="answersBox"></div>
+
+<div class="helpers">
+    <button class="helper-btn" onclick="use5050()" id="btn5050">🧠 50:50</button>
+    <button class="helper-btn" onclick="addTime()" id="btnTime">⏱ +10 сек</button>
+    <button class="helper-btn" onclick="doublePoints()" id="btnDouble">⭐ x2 точки</button>
+</div>
+
+<div id="endScreen">
+    <h2>🎉 Край на играта!</h2>
+    <p>Общ резултат: <b><span id="finalScore"></span></b></p>
+    <p>Време: <b><span id="finalTime"></span> сек</b></p>
+</div>
+
+<button class="restart" onclick="restartGame()">🔄 Рестарт</button>
+
+<audio id="soundCorrect" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="soundWrong" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+
+<script>
+let questions = [
+    {
+        text: "Има ли ползи за кръводарителя?",
+        answers: ["Да", "Не"],
+        correct: 0
+    },
+    {
+        text: "Какви са ползите за кръводарителя?",
+        answers: [
+            "Увеличават се защитните сили на организма",
+            "Получава 2 дни отпуск",
+            "Намалява се рискът от сърдечно-съдови заболявания",
+            "Всичко изброено"
+        ],
+        correct: 3
+    }
+];
+
+let current = 0;
+let score = 0;
+let time = 0;
+let timer;
+let answered = false;
+let multiplier = 1;
+let realTime = 0;
+
+function startTimer() {
+    timer = setInterval(() => {
+        time++;
+	realTime++;
+
+	document.getElementById("time").textContent = time;
+
+    }, 1000);
+}
+
+function showQuestion() {
+    answered = false;
+    multiplier = 1;
+
+    const q = questions[current];
+    document.getElementById("questionText").textContent = q.text;
+
+    const box = document.getElementById("answersBox");
+    box.innerHTML = "";
+
+    q.answers.forEach((ans, i) => {
+        const div = document.createElement("div");
+        div.className = "answer";
+        div.textContent = ans;
+        div.onclick = () => checkAnswer(div, i === q.correct);
+        box.appendChild(div);
+    });
+}
+
+function checkAnswer(el, correct) {
+    if (answered) return;
+    answered = true;
+
+    document.querySelectorAll('.answer').forEach(a => a.style.pointerEvents = "none");
+
+    if (correct) {
+        el.classList.add("correct");
+        document.getElementById("soundCorrect").play();
+        score += 50 * multiplier;
+    } else {
+        el.classList.add("wrong");
+        document.getElementById("soundWrong").play();
+    }
+
+    document.getElementById("score").textContent = score;
+
+    setTimeout(() => {
+        current++;
+        if (current < questions.length) {
+            showQuestion();
+        } else {
+            endGame();
+        }
+    }, 1000);
+}
+
+function use5050() {
+    document.getElementById("btn5050").disabled = true;
+    const wrong = [...document.querySelectorAll('.answer')]
+        .filter((a, i) => i !== questions[current].correct);
+    wrong.slice(0, 2).forEach(a => a.style.visibility = "hidden");
+}
+
+function addTime() {
+    document.getElementById("btnTime").disabled = true;
+    time += 10; // добавя време само визуално
+    document.getElementById("time").textContent = time;
+
+}
+
+function doublePoints() {
+    document.getElementById("btnDouble").disabled = true;
+    multiplier = 2;
+}
+
+function endGame() {
+    clearInterval(timer);
+    document.getElementById("questionText").style.display = "none";
+    document.getElementById("answersBox").style.display = "none";
+    document.querySelector(".helpers").style.display = "none";
+    document.getElementById("endScreen").style.display = "block";
+    document.getElementById("finalScore").textContent = score + " точки";
+    document.getElementById("finalTime").textContent = realTime;
+
+}
+
+function restartGame() {
+    current = 0;
+    score = 0;
+    time = 0;
+    realTime = 0;
+    document.getElementById("score").textContent = 0;
+    document.getElementById("time").textContent = 0;
+
+    document.getElementById("btn5050").disabled = false;
+    document.getElementById("btnTime").disabled = false;
+    document.getElementById("btnDouble").disabled = false;
+
+    document.getElementById("questionText").style.display = "block";
+    document.getElementById("answersBox").style.display = "grid";
+    document.querySelector(".helpers").style.display = "block";
+    document.getElementById("endScreen").style.display = "none";
+
+    clearInterval(timer);
+    startTimer();
+    showQuestion();
+}
+
+startTimer();
+showQuestion();
+</script>
+
+</body>
+</html>

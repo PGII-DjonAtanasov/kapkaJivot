@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Капка живот</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    background-image: radial-gradient(#e5e9ef 1px, transparent 1px);
+    background-size: 20px 20px;
+    padding-top: 75px; 
+}
+
+/* ===== NAVBAR ===== */
+header {
+    background-color: #c83a3a;
+    color: white;
+    position: fixed;      /* ⬅️ ВАЖНО */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;        /* ⬅️ над всичко */
+}
+
+.navbar {
+    max-width: 1300px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    position: relative;
+}
+
+/* Лого */
+.logo {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.logo img {
+    filter:
+        drop-shadow(1px 0 0 white)
+        drop-shadow(-1px 0 0 white)
+        drop-shadow(0 1px 0 white)
+        drop-shadow(0 -1px 0 white);
+}
+
+.logo-icon {
+    font-size: 26px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Меню */
+nav {
+    flex: 1;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+nav ul li {
+    position: relative;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown > a {
+    padding: 10px 0;
+    display: inline-block;
+}
+
+/* падащо меню */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;      /* вместо 30px */
+    left: 0;
+    background-color: #c83a3a;
+    min-width: 240px;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+/* hover както върху бутона, така и върху самото меню */
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover {
+    display: block;
+}
+.dropdown-content a {
+    padding: 12px 16px;
+    display: block;
+    white-space: nowrap;
+}
+
+
+/* Търсене */
+.search {
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.search-box {
+    display: none;
+    position: absolute;
+    top: 65px;
+    right: 20px;
+}
+
+.search-box input {
+    padding: 8px 12px;
+    width: 220px;
+    border-radius: 4px;
+    border: none;
+}
+
+/* Hamburger */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+/* ===== HERO ===== */
+.hero {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.hero h1 {
+    color: #000;
+    font-size: 55px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.6;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    nav ul {
+        display: none;
+        flex-direction: column;
+        background-color: #c83a3a;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    nav ul.show {
+        display: flex;
+    }
+
+    .dropdown-content {
+        position: static;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}
+
+/* ===== ACCORDION ===== */
+.accordion-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.accordion-item {
+    margin-bottom: 25px;
+}
+
+.accordion-btn {
+    width: 100%;
+    background-color: #c83a3a;
+    color: white;
+    border: none;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.accordion-btn:hover {
+    background-color: #b23232;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    background-color: white;
+    transition: max-height 0.4s ease;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 0 15px;
+}
+
+.accordion-content p {
+    padding: 20px 0;
+    line-height: 1.6;
+}
+.center-img {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+    height: auto;
+}
+
+ul {
+    margin-left: 30px;
+}
+
+.link-btn {
+    display: block;
+    text-decoration: none;   /* маха подчертаването */
+    color: white;            /* текстът остава бял */
+}
+
+.link-btn:hover {
+    color: white;
+}
+
+.search-results {
+    display: none;
+    position: absolute;
+    top: 105px;
+    right: 20px;
+    width: 250px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.search-results a {
+    display: block;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.search-results a:hover {
+    background-color: #f2f2f2;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="navbar">
+
+    <!-- Лого -->
+    <div class="logo">
+        <a href="index.html" class="logo-link"><div class="logo-icon"><img src="logo2.png" height="35" width="20"></div></a>
+        <div class="logo-text">Капка живот</div>
+    </div>
+
+    <!-- Меню -->
+    <nav>
+        <ul id="menu">
+            <li><a href="questions_and_answers.html">Въпроси и отговори</a></li>
+            <li><a href="myths_and_reality.html">Митове и реалност</a></li>
+            <li><a href="statistics.html">Статистика</a></li>
+
+            <li class="dropdown">
+                <span class="dropdown-toggle">Инициативи ▾</span>
+                <div class="dropdown-content">
+                    <a href="application.html">Анкетно проучване</a>
+                    <a href="Peers_educating_peers.html">Връстници обучават връстници</a>
+                    <a href="Blood_donation_campaign.html">Кръводарителска кампания</a>
+                    <a href="Garden_of_Blood_Donation.html">Градина на кръводаряването</a>
+                    <a href="Promotion_of_the_project.html">Популяризиране на проекта</a>
+                </div>
+            </li>
+
+	<li class="dropdown">
+                <span class="dropdown-toggle">Лични истории ▾</span>
+                <div class="dropdown-content">
+                    <a href="patient.html">Пациент</a>
+                    <a href="relative_of_the_patient.html">Роднина на пациент</a>
+                    <a href="first_time_blood_donor.html">Кръводарители за първи път</a>
+                    <a href="regular_blood_donor.html">Редовен кръводарител</a>
+                    <a href="medical_specialist.html">Медицински специалисти</a>
+                </div>
+            </li>
+
+
+            <li class="dropdown">
+                <span class="dropdown-toggle">Образователни ресурси ▾</span>
+                <div class="dropdown-content">
+                    <a href="history_of_blood_donation.html">История на кръводаряването</a>
+                    <a href="worksheets.html">Работни листове</a>
+ 		    <a href="fairy_tale_a_drop_of_life.html">Приказка "Капка живот"</a>
+		    <a href="educational_games.html">Образователни игри</a>
+		    <a href="blood_center_questionnaire.html">Въпросник в кръвен център</a>
+		    <a href="simulator.html">Провери своите знания - кръводаряване</a>
+		</div>
+            </li>
+
+	<li><a href="for_us.html">За нас</a></li>
+                
+        </ul>
+    </nav>
+
+    <!-- Икони -->
+    <div class="search" aria-label="Търсене">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+
+    <div class="hamburger">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <!-- Search box -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Търсене...">
+    </div>
+<div id="searchResults" class="search-results"></div> 
+</div>
+</header>
+
+<section class="hero">
+<h1>Образователни ресурси</h1>
+</section>
+
+<section class="accordion-container">
+
+   <div class="accordion-item">
+    <a href="history_of_blood_donation.html" class="accordion-btn link-btn">
+        История на кръводаряването
+    </a>
+</div>
+
+<div class="accordion-item">
+    <a href="worksheets.html" class="accordion-btn link-btn">
+        Работни листове
+    </a>
+</div>
+
+<div class="accordion-item">
+    <a href="fairy_tale_a_drop_of_life.html" class="accordion-btn link-btn">
+        Приказка "Капка живот"
+    </a>
+</div>
+
+<div class="accordion-item">
+    <a href="educational_games.html" class="accordion-btn link-btn">
+        Образователни игри
+    </a>
+</div>
+
+<div class="accordion-item">
+    <a href="blood_center_questionnaire.html" class="accordion-btn link-btn">
+        Въпростик в кръвен център
+    </a>
+</div>
+
+<div class="accordion-item">
+    <a href="simulator.html" class="accordion-btn link-btn">
+        Провери своите знания - кръводаряване
+    </a>
+</div>
+
+
+</section>
+
+<script>
+// Hamburger menu
+const hamburger = document.querySelector('.hamburger');
+const menu = document.getElementById('menu');
+
+hamburger.addEventListener('click', () => {
+    menu.classList.toggle('show');
+});
+
+</script>
+<script src="search-data.js"></script>
+
+ <script>
+/* ===== SEARCH SYSTEM (FIXED FINAL) ===== */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchIcon = document.querySelector('.search');
+    const searchBox = document.querySelector('.search-box');
+    const searchInput = document.getElementById("searchInput");
+    const resultsBox = document.getElementById("searchResults");
+
+    // Показване / скриване
+    searchIcon.addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        const isVisible = searchBox.style.display === 'block';
+        searchBox.style.display = isVisible ? 'none' : 'block';
+        resultsBox.style.display = 'none';
+
+        if (!isVisible) {
+            searchInput.value = '';
+            searchInput.focus();
+        }
+    });
+
+    // Live търсене
+    searchInput.addEventListener("input", function () {
+
+        const query = this.value.toLowerCase().trim();
+        resultsBox.innerHTML = "";
+
+        if (query.length < 2) {
+            resultsBox.style.display = "none";
+            return;
+        }
+
+        if (typeof siteData === "undefined") {
+            console.error("siteData не е зареден.");
+            return;
+        }
+
+        const results = siteData.filter(page =>
+            page.title.toLowerCase().includes(query) ||
+            page.content.toLowerCase().includes(query)
+        );
+
+        if (results.length === 0) {
+            resultsBox.innerHTML =
+                "<p style='padding:10px;'>Няма резултати</p>";
+        } else {
+            results.forEach(page => {
+                const link = document.createElement("a");
+                link.href = page.url;
+                link.textContent = page.title;
+                resultsBox.appendChild(link);
+            });
+        }
+
+        resultsBox.style.display = "block";
+    });
+
+    // Клик извън search → затваряне
+    document.addEventListener("click", function (e) {
+        if (!searchBox.contains(e.target) &&
+            !searchIcon.contains(e.target) &&
+            !resultsBox.contains(e.target)) {
+
+            searchBox.style.display = "none";
+            resultsBox.style.display = "none";
+        }
+    });
+
+});
+</script>
+</body>
+</html>
